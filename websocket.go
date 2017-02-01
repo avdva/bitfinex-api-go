@@ -120,7 +120,6 @@ func (w *WebSocketService) sendSubscribeMessages() error {
             Pair:    s.Pair,
         })
 
-        fmt.Println("Subscribe to channel ", s.Channel, s.Pair)
         err := w.ws.WriteMessage(websocket.TextMessage, msg)
         if err != nil {
             // Can't send message to web socket.
