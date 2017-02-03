@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -56,12 +57,14 @@ type SubscribeMsg struct {
 	Event   string  `json:"event"`
 	Channel string  `json:"channel"`
 	Pair    string  `json:"pair"`
+	Len     string  `json:"len"`
 	ChanId  float64 `json:"chanId,omitempty"`
 }
 
 type subscribeToChannel struct {
 	Channel string
 	Pair    string
+	Len     int
 	Chan    chan [][]float64
 }
 
@@ -99,11 +102,12 @@ func (w *WebSocketService) Close() {
 	w.ws.Close()
 }
 
-func (w *WebSocketService) AddSubscribe(channel string, pair string, c chan [][]float64) {
+func (w *WebSocketService) AddSubscribe(channel string, pair string, length int, c chan [][]float64) {
 	s := subscribeToChannel{
 		Channel: channel,
 		Pair:    pair,
 		Chan:    c,
+		Len:     length,
 	}
 	w.subscribes = append(w.subscribes, s)
 }
@@ -118,6 +122,7 @@ func (w *WebSocketService) sendSubscribeMessages() error {
 			Event:   "subscribe",
 			Channel: s.Channel,
 			Pair:    s.Pair,
+			Len:     strconv.Itoa(s.Len),
 		})
 		err := w.ws.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
