@@ -79,10 +79,11 @@ func NewWebSocketService(c *Client) *WebSocketService {
 // Connect create new bitfinex websocket connection
 func (w *WebSocketService) Connect() error {
 	var d = websocket.Dialer{
-		Subprotocols:    []string{"p1", "p2"},
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		Proxy:           http.ProxyFromEnvironment,
+		Subprotocols:     []string{"p1", "p2"},
+		ReadBufferSize:   1024,
+		WriteBufferSize:  1024,
+		Proxy:            http.ProxyFromEnvironment,
+		HandshakeTimeout: 3 * time.Second,
 	}
 
 	if w.client.WebSocketTLSSkipVerify {
